@@ -6,15 +6,27 @@ import { movies } from "./data/movies.js";
 
 function App() {
   const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [selectedGenre, setSelectedGenre] = useState("all");
   const topRated = movies.filter(movie => movie.rating >= 8.7);
+  const genres = movies
+  .map(movie => movie.genre)
+  .filter((genre, index, all) => all.indexOf(genre) === index);
+
+
   const animation = movies.filter(movie => movie.genre === "Animation");
   const shortMovies = movies.filter(movie => movie.duration <= 100);
   const top3 = [...movies]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 3);
-    const shownMovies = onlyAvailable
-  ? movies.filter(movie => movie.available)
-  : movies;
+    let shownMovies = movies;
+
+if (onlyAvailable) {
+  shownMovies = shownMovies.filter(movie => movie.available);
+}
+
+if (selectedGenre !== "all") {
+  shownMovies = shownMovies.filter(movie => movie.genre === selectedGenre);
+}
   function toggleAvailable() {
   setOnlyAvailable(!onlyAvailable);
 }
@@ -30,12 +42,32 @@ function App() {
 
         <MovieList title="הכי מדורגים" movies={topRated} />
         <div className="toolbar">
+  
   <button
     className={onlyAvailable ? "btn btn--active" : "btn"}
     onClick={toggleAvailable}
   >
     רק זמינים לצפייה
   </button>
+
+  <span className="toolbar__divider"></span>
+
+  <button
+  className={selectedGenre === "all" ? "btn btn--active" : "btn"}
+  onClick={() => setSelectedGenre("all")}
+>
+  הכל
+</button>
+
+  {genres.map(genre => (
+  <button
+    key={genre}
+    className={selectedGenre === genre ? "btn btn--active" : "btn"}
+    onClick={() => setSelectedGenre(genre)}
+  >
+    {genre}
+  </button>
+))}
 </div>
         <MovieList title={`כל הסרטים (${shownMovies.length})`} movies={shownMovies} />
         <MovieList title="אנימציה" movies={animation} />
