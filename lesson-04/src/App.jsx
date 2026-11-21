@@ -7,6 +7,7 @@ import { movies } from "./data/movies.js";
 function App() {
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(4);
   const topRated = movies.filter(movie => movie.rating >= 8.7);
   const genres = movies
   .map(movie => movie.genre)
@@ -27,8 +28,13 @@ if (onlyAvailable) {
 if (selectedGenre !== "all") {
   shownMovies = shownMovies.filter(movie => movie.genre === selectedGenre);
 }
+const visibleMovies = shownMovies.slice(0, visibleCount);
+
   function toggleAvailable() {
   setOnlyAvailable(!onlyAvailable);
+}
+  function showMore() {
+  setVisibleCount(visibleCount + 4);
 }
 
   return (
@@ -69,7 +75,14 @@ if (selectedGenre !== "all") {
   </button>
 ))}
 </div>
-        <MovieList title={`כל הסרטים (${shownMovies.length})`} movies={shownMovies} />
+        <MovieList title={`כל הסרטים (${shownMovies.length})`} movies={visibleMovies} />
+        {visibleCount < shownMovies.length && (
+  <div className="more">
+    <button className="btn" onClick={showMore}>
+      הצג עוד
+    </button>
+  </div>
+)}
         <MovieList title="אנימציה" movies={animation} />
         <MovieList title="קצרים — עד 100 דקות" movies={shortMovies} />
         <MovieList title="טופ 3" movies={top3} />
