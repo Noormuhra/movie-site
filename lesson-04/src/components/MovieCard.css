@@ -98,3 +98,23 @@
 .movie-card__like:hover {
   background: var(--surface);
 }
+/* הדירוג שלי */
+.movie-card__my-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.movie-card__my-rating span {
+  margin-right: 8px;
+}
+
+.movie-card__my-rating button {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+}
