@@ -23,39 +23,30 @@ function App() {
     shownMovies = shownMovies.filter(movie => movie.available);
   }
 
+  if (genre !== "all") {
+    shownMovies = shownMovies.filter(movie => movie.genre === genre);
+  }
+
   if (text !== "") {
     shownMovies = shownMovies.filter(movie =>
       movie.title.toLowerCase().includes(text)
     );
   }
 
-  if (genre !== "all") {
-    shownMovies = shownMovies.filter(movie =>
-      movie.genre === genre
-    );
-  }
+  shownMovies = [...shownMovies].sort(compareMovies);
 
-  shownMovies = [...shownMovies];
-
-  if (sortBy === "rating") {
-    shownMovies.sort((a, b) => b.rating - a.rating);
-  }
-  else if (sortBy === "year") {
-    shownMovies.sort((a, b) => b.year - a.year);
-  }
-  else if (sortBy === "title") {
-    shownMovies.sort((a, b) => a.title.localeCompare(b.title));
+  function compareMovies(a, b) {
+    if (sortBy === "year") {
+      return b.year - a.year;
+    }
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    }
+    return b.rating - a.rating;
   }
 
   function toggleAvailable() {
     setOnlyAvailable(!onlyAvailable);
-  }
-
-  function resetFilters() {
-    setQuery("");
-    setGenre("all");
-    setSortBy("rating");
-    setOnlyAvailable(false);
   }
 
   return (
@@ -86,19 +77,9 @@ function App() {
           >
             רק זמינים לצפייה
           </button>
-
-          <button className="btn" onClick={resetFilters}>
-            איפוס סינון
-          </button>
         </div>
 
-        <p>מציגים {shownMovies.length} סרטים</p>
-
-        {shownMovies.length === 0 ? (
-          <p>לא נמצאו סרטים. נסו לשנות את החיפוש או את הסינון</p>
-        ) : (
-          <MovieList title="כל הסרטים" movies={shownMovies} />
-        )}
+        <MovieList title="כל הסרטים" movies={shownMovies} />
 
         <AddMovieForm />
       </main>
