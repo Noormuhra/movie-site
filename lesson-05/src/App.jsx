@@ -9,6 +9,9 @@ import { movies } from "./data/movies.js";
 function App() {
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [query, setQuery] = useState("");
+  const [genre, setGenre] = useState("all");
+  const [sortBy, setSortBy] = useState("rating");
+
   const topRated = movies.filter(movie => movie.rating >= 8.7);
 
 const text = query.trim().toLowerCase();
@@ -23,6 +26,22 @@ if (text !== "") {
   shownMovies = shownMovies.filter(movie =>
     movie.title.toLowerCase().includes(text)
   );
+}
+if (genre !== "all") {
+  shownMovies = shownMovies.filter(movie =>
+    movie.genre === genre
+  );
+}
+shownMovies = [...shownMovies];
+
+if (sortBy === "rating") {
+  shownMovies.sort((a, b) => b.rating - a.rating);
+}
+else if (sortBy === "year") {
+  shownMovies.sort((a, b) => b.year - a.year);
+}
+else if (sortBy === "title") {
+  shownMovies.sort((a, b) => a.title.localeCompare(b.title));
 }
   function toggleAvailable() {
     setOnlyAvailable(!onlyAvailable);
@@ -40,7 +59,14 @@ if (text !== "") {
         <MovieList title="הכי מדורגים" movies={topRated} />
 
         <div className="toolbar">
-          <SearchBar query={query} onQueryChange={setQuery} />
+          <SearchBar
+           query={query}
+           onQueryChange={setQuery}
+           genre={genre}
+           onGenreChange={setGenre}
+           sortBy={sortBy}
+           onSortChange={setSortBy}
+           />
           <button
             className={onlyAvailable ? "btn btn--active" : "btn"}
            onClick={toggleAvailable}
